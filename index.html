@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ganti Warna | Sukma Syafika</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .carousel {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between; 
+      margin: 20px auto;
+      max-width: 450px;
+    }
+
+    #carousel-content {
+      flex: 1;
+      min-width: 250px;
+      min-height: 120px;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      border-radius: 10px;
+      background-color: #fff;
+      text-align: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 1rem;
+      color: #000000;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      margin: 0 10px;
+    }
+
+    .carousel button {
+      background-color: #0d6efd;
+      color: white;
+      border: none;
+      padding: 0;
+      font-size: 1.5rem;
+      cursor: pointer;
+      border-radius: 6px;
+      user-select: none;
+      height: 40px;
+      width: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel button:hover {
+      background-color: #0847c3;
+    }
+
+    </style>
+    
+</head>
+  <body>
+    <nav>
+      <div class="nav-center">
+        <h4>Ganti Warna | Sukma Syafika</h4>
+        <div class="nav-link">
+            <a href="index.html" class="active">Color</a>
+            <a href="hex.html">Hex</a>
+            <a href="index.php">Admin</a>
+        </div>
+      </div>
+    </nav>
+    <main>
+      <div class="container">
+        <div id="carousel-container" class="carousel hidden">
+          <button id="prev">&#10094;</button>
+          <div id="carousel-content"></div>
+          <button id="next">&#10095;</button>
+        </div>
+        <h2 class="judul">SELAMAT DATANG DI MATAKULIAH IMK 2025</h2>
+        <h2 class="bckg">background color : <span class="color"> #f1f5f8 </span></h2>
+        <button class="btn btn-hero" id="btn">Click</button>
+      </div>
+    </main>
+
+    <script>
+      const container = document.getElementById("carousel-container");
+      const content = document.getElementById("carousel-content");
+      const btnPrev = document.getElementById("prev");
+      const btnNext = document.getElementById("next");
+
+      let dataMahasiswa = [];
+      let index = 0;
+
+      fetch('data.php')
+        .then(res => res.json())
+        .then(data => {
+          if (data.length === 0) {
+            container.style.display = 'none';
+            return;
+          }
+
+          dataMahasiswa = data;
+
+          if (data.length === 1) {
+            btnPrev.style.display = 'none';
+            btnNext.style.display = 'none';
+          } else {
+            btnPrev.style.display = 'flex';
+            btnNext.style.display = 'flex';
+          }
+
+          container.style.display = 'flex';
+
+          showMahasiswa(index);
+        })
+        .catch(err => {
+          console.error('Error fetching data:', err);
+          container.style.display = 'none';
+        });
+
+      function showMahasiswa(i) {
+        const mhs = dataMahasiswa[i];
+        content.innerHTML = `
+          <div>
+            <p><strong>Nama:</strong> ${mhs.nama}</p>
+            <p><strong>NPM:</strong> ${mhs.npm}</p>
+            <p><strong>Kelas:</strong> ${mhs.kelas}</p>
+            <p><strong>Prodi:</strong> ${mhs.prodi}</p>
+          </div>
+        `;
+      }
+
+      btnNext.addEventListener("click", () => {
+        if (dataMahasiswa.length <= 1) return; 
+        index = (index + 1) % dataMahasiswa.length;
+        showMahasiswa(index);
+      });
+
+      btnPrev.addEventListener("click", () => {
+        if (dataMahasiswa.length <= 1) return; 
+        index = (index - 1 + dataMahasiswa.length) % dataMahasiswa.length;
+        showMahasiswa(index);
+      });
+
+    </script>
+
+    <script src="script.js"></script>
+  </body>
+</html>
